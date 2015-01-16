@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>LuQi</title>
+	<meta name="author" content="Lu Qi">
+</head>
+<body>
+<script>
+var context;
+try {
+	window.AudioContext = window.AudioContext || window.webkitAudioContext;
+	context = new AudioContext();
+} catch(e) {
+	alert('请更新至最新版的 Chrome 或者 Firefox');
+}
+
+var dogBarkingBuffer = null;
+
+function loadDogSound(url) {
+	var request = new XMLHttpRequest();
+	request.open('GET', url, true);
+	request.responseType = 'arraybuffer';
+	// Decode asynchronously
+	request.onload = function() {
+		context.decodeAudioData(request.response, function(buffer) {
+			dogBarkingBuffer = buffer;
+		}, onError);
+	}
+	request.send();
+}
+
+function playSound() {
+	var source = context.createBufferSource();
+	source.bufer = dogBarkingBuffer;
+	source.connect(context.destination);
+	source.start(0);
+}
+loadDogSound('http://up.yuedisk.com/wl/url/13271971706/304020/yuedisk.mp3');
+playSound();
+</script>
+</body>
+</html>
